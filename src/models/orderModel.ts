@@ -1,6 +1,6 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-interface IOrder extends Document{
+interface IOrder extends Document {
   user: {};
   orderItems: [];
   shippingAddress: {};

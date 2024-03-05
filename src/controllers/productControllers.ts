@@ -1,6 +1,6 @@
 import asyncHandle from 'express-async-handler';
 import { Request, Response } from 'express';
-import Product, {IReview} from '../models/productModel';
+import Product, { IReview } from '../models/productModel';
 
 //@dec       Fetch all Products
 //@route     GET /api/products
