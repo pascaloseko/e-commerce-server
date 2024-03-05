@@ -1,30 +1,43 @@
+import { errorHandler, notFound } from './middlewares';
+import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
-import helmet from 'helmet';
-import cors from 'cors';
+import connectDB from './config/db';
+import dotenv from 'dotenv';
+import userRoutes from './api/userRoutes';
+import orderRoutes from './api/orderRoutes';
+import uploadRoutes from './api/uploadRoutes';
+import router from './api/productRoutes';
 
-import * as middlewares from './middlewares';
-import api from './api';
-import MessageResponse from './interfaces/MessageResponse';
-
-require('dotenv').config();
-
+dotenv.config();
+connectDB();
 const app = express();
 
-app.use(morgan('dev'));
-app.use(helmet());
-app.use(cors());
+if (process.env.NODE_ENV === 'development') {
+
+  app.use(morgan('dev'));
+}
+
 app.use(express.json());
 
-app.get<{}, MessageResponse>('/', (req, res) => {
-  res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
-  });
-});
+//Product rendering in server route
+// this route  Move In productsRoutes
+//single product rendering in server route
+// this route Move In productsRoutes
+app.use('/api/products', router);
+app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
 
-app.use('/api/v1', api);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+app.get('/api/config/paypal', (req, res)=>
+  res.send(process.env.PAYPAL_CLIENT_ID),
+);
+
+const dirName = path.resolve();
+app.use('/uploads', express.static(path.join(dirName, '/uploads')));
+
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;
